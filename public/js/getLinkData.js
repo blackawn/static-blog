@@ -1,0 +1,19 @@
+import{request}from"https://cdn.skypack.dev/pin/@octokit/request@v5.4.15-Rbg0guJIRM1jWyUH1h62/mode=imports,min/optimized/@octokit/request.js";window.addEventListener("DOMContentLoaded",()=>{"lastGetIssuesListData"in localStorage&&"lastGetIssuesListDataTime"in localStorage&&Number(strCurrentTime)-Number(localStorage.getItem("lastGetIssuesListDataTime"))<Number(basicConfig.linksPage.resetTime)?creatRenderElem(JSON.parse(localStorage.getItem("lastGetIssuesListData"))):requestIssueList(objRequestParameter).catch(e=>{elemLoadEffect.classList.add("loading-error"),console.log(e)})});const elemLoadEffect=document.querySelector(".loading-content"),elemRenderContainerWrap=document.querySelector(".link-wrap"),objRequestParameter=JSON.parse(basicConfig.linksPage.requestParameter),strCurrentTime=String(Date.now());async function requestIssueList(e){await request("GET /repos/{owner}/{repo}/issues",e).then(e=>{const t=[];return e.data.forEach(e=>{t.push(Array.of(e.labels[0].name,JSON.parse(e.body)))}),t}).then(e=>e.sort(([e],[t])=>(e!=basicConfig.linksPage.topName)-(t!=basicConfig.linksPage.topName)||(t<e?1:-1))).then(e=>{const a={};return e.map(e=>{var[t,e]=e;a[t]?a[t].push(e):a[t]=[e]}),Object.entries(a)}).then(e=>(e.forEach(e=>e[1].sort((e,t)=>e.title>t.title?1:-1)),e)).then(e=>(localStorage.setItem("lastGetIssuesListData",JSON.stringify(e)),localStorage.setItem("lastGetIssuesListDataTime",String(Date.now())),e)).then(e=>{creatRenderElem(e)})}const creatRenderElem=function(e){elemLoadEffect.remove();const s="link-copy-button";e.forEach(e=>{elemRenderContainerWrap.innerHTML+=`
+      <section class="observer-target transition-all duration-500 delay-500 transform translate-y-0 opacity-100 translate-y-8 opacity-0"><h3 id="${e[0]}" class="mb-2 sticky bg-white top-0 z-50 py-4 dark:bg-blueGray-900"><a href="#${e[0]}" class="transition-colors capitalize hover:text-cyan-600 dark:text-blueGray-400 dark:hover:text-cyan-600">${e[0]}</a></h3>
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      ${(()=>{let r="";return e[1].forEach(e=>{let t="",a="";e.avatar?a=`style="background-image: url(${e.avatar})"`:t=e.link.match(/^(https|http)?:\/\/.+\.([^\/]+).*/)[2];e=`
+          <div class="relative rounded-md overflow-hidden flex items-center transition-colors h-[6rem] p-4 bg-gray-100 group hover:bg-cyan-50 dark:hover:bg-coolGray-800 dark:bg-blueGray-800">
+          <div class="w-12 h-12 flex justify-center items-center truncate bg-cyan-500 text-cyan-50 overflow-ellipsis bg-cover rounded-full dark:bg-cyan-700 dark:text-cyan-200" ${a}>${t}</div>
+          <div class="ml-4">
+          <h4 class="max-w-[9rem] truncate text-lg mb-1"><a href="${e.link}" class="capitalize transition-colors hover:text-cyan-500 dark:hover:text-cyan-500" target="_blank">${e.title}</a></h4>
+          <p class="max-w-[9rem] truncate capitalize text-sm">${e.describe}</p>
+          </div>
+          <div class="absolute p-1 right-3 top-3 flex opacity-0 items-cente space-x-1 group-hover:opacity-100 group-hover:bg-cyan-50 dark:group-hover:bg-coolGray-800">
+          <button class="${s} rounded-full text-xl focus:outline-none flex justify-center items-center hover:text-cyan-500 dark:hover:text-cyan-500">
+          <ion-icon name="clipboard-outline"></ion-icon>
+          </button>
+          </div>
+          </div>
+          `;r+=e}),r})()}
+      </div>
+      </section>`}),document.querySelectorAll(`.${s}`).forEach(e=>{e.addEventListener("click",()=>{creatCopyToClipboard(e.parentElement.parentElement.querySelector("a").href)&&(e.disabled=!0,e.classList.remove("hover:text-cyan-500","dark:hover:text-cyan-500"),e.classList.add("cursor-not-allowed"),setTimeout(()=>{e.disabled=!1,e.classList.add("hover:text-cyan-500","dark:hover:text-cyan-500"),e.classList.remove("cursor-not-allowed")},3e3))})}),loadPageSuccessEffect(document.querySelectorAll(".observer-target"))};
